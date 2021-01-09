@@ -14,6 +14,8 @@ let playerOneTurn = true;
 let rolledNumber;
 let scoreOne = 0;
 let scoreTwo = 0;
+let currentScoreOne = 0;
+let currentScoreTwo = 0;
 
 const rollDice = () => {
   const rolledNumber = Math.ceil(Math.random() * 6);
@@ -21,20 +23,20 @@ const rollDice = () => {
 
   if (playerOneTurn) {
     if (rolledNumber === 1) {
-      scoreOne = 0;
+      currentScoreOne = 0;
       switchPlayers();
     } else {
-      scoreOne += rolledNumber;
+      currentScoreOne += rolledNumber;
     }
-    currentScorePlayerOne.textContent = scoreOne;
+    currentScorePlayerOne.textContent = currentScoreOne;
   } else {
     if (rolledNumber === 1) {
-      scoreTwo = 0;
+      currentScoreTwo = 0;
       switchPlayers();
     } else {
-      scoreTwo += rolledNumber;
+      currentScoreTwo += rolledNumber;
     }
-    currentScorePlayerTwo.textContent = scoreTwo;
+    currentScorePlayerTwo.textContent = currentScoreTwo;
   }
 };
 
@@ -42,6 +44,8 @@ const switchPlayers = () => {
   playerOneTurn = !playerOneTurn;
   backgroundOne.classList.toggle('player--active');
   backgroundTwo.classList.toggle('player--active');
+  currentScorePlayerOne.textContent = '0';
+  currentScorePlayerTwo.textContent = '0';
 };
 
 const resetGame = () => {
@@ -52,7 +56,32 @@ const resetGame = () => {
   scorePlayerTwo.textContent = '0';
   backgroundOne.classList.add('player--active');
   backgroundTwo.classList.remove('player--active');
+  backgroundOne.classList.remove('player--winner');
+  backgroundTwo.classList.remove('player--winner');
+  rollBtn.addEventListener('click', rollDice);
+};
+const holdScore = () => {
+  if (playerOneTurn) {
+    scoreOne += currentScoreOne;
+    scorePlayerOne.textContent = scoreOne;
+    currentScoreOne = 0;
+  } else {
+    scoreTwo += currentScoreTwo;
+    scorePlayerTwo.textContent = scoreTwo;
+    currentScoreTwo = 0;
+  }
+  checkWin();
+  switchPlayers();
+};
+const checkWin = () => {
+  if (scoreOne >= 100 || scoreTwo >= 100) {
+    playerOneTurn
+      ? backgroundOne.classList.add('player--winner')
+      : backgroundTwo.classList.add('player--winner');
+    rollBtn.removeEventListener('click', rollDice);
+    holdBtn.removeEventListener('click', holdScore);
+  }
 };
 newGameBtn.addEventListener('click', resetGame);
 rollBtn.addEventListener('click', rollDice);
-// holdBtn.addEventListener('click', holdScore);
+holdBtn.addEventListener('click', holdScore);
