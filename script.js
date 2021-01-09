@@ -45,6 +45,7 @@ const switchPlayers = () => {
 };
 
 const resetGame = () => {
+  playerOneTurn = true;
   currentScorePlayerOne.textContent = '0';
   currentScorePlayerTwo.textContent = '0';
   scorePlayerOne.textContent = '0';
